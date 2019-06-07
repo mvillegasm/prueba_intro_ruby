@@ -15,25 +15,23 @@ end
 
 data = request("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=10")
 
-def build_web_page(data)
-html = ""
+def photos_count(data)
+  camera = []
+  data['photos'].each do |photo|
+    camera.push photo['camera']['name']
+  end
 
-data['photos'].each do |photo|
-  html += "<li><img src=\"#{photo['img_src']}\"></li>\n"
+  chemcam = camera.count('CHEMCAM')
+  mahli = camera.count('MAHLI')
+  navcam = camera.count('NAVCAM')
+
+  hash = ['CHEMCAM', 'MAHLI', 'NAVCAM']
+
+  num_array = [chemcam, mahli, navcam]
+
+  final_hash = hash.zip(num_array).to_h
+
+  print final_hash, "\n"
 end
 
-File.write('index.html', "<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-  <meta charset=\"UTF-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-  <meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\">
-  <title>Document</title>
-</head>
-<body>
-  <ul>
-    #{html}
-  </ul>
-</body>
-</html>")
-end
+photos_count(data)
